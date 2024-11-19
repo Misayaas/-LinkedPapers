@@ -1,3 +1,4 @@
+import pymysql
 from flask import Flask
 from config import Config
 from .extensions import db, migrate, login_manager, cache
@@ -15,6 +16,11 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login_manager.init_app(app)
     cache.init_app(app)
+
+    # 创建数据库
+    with app.app_context():
+        #create_database(app.config['SQLALCHEMY_DATABASE_URI'])
+        db.create_all()
 
     # 注册蓝图
     app.register_blueprint(auth_bp, url_prefix='/auth')

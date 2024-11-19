@@ -8,6 +8,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CACHE_TYPE = 'simple'
     CACHE_DEFAULT_TIMEOUT = 300
+    SESSION_TYPE = 'filesystem'
 
 class DevelopmentConfig(Config):
     DEBUG = True

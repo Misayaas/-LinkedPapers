@@ -1,6 +1,6 @@
 # src/routes/auth.py
 from flask import Blueprint, request, jsonify
-from src.services.auth_service import register, login
+from src.services.auth_service import register_user, login_user, quit_user
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -10,17 +10,22 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
-    user = register(username, email, password)
+    user = register_user(username, email, password)
     if user:
-        return jsonify({'message': 'User registered successfully'}), 201
-    return jsonify({'message': 'Username or email already exists'}), 400
+        return jsonify({'message': '创建用户成功'}), 201
+    return jsonify({'message': '用户名或邮箱已经存在'}), 400
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    user = login(username, password)
+    user = login_user(username, password)
     if user:
-        return jsonify({'message': 'Login successful'}), 200
-    return jsonify({'message': 'Invalid username or password'}), 401
+        return jsonify({'message': '登录成功'}), 200
+    return jsonify({'message': '无效的用户名或密码'}), 401
+
+@auth_bp.route('/quit', methods=['POST'])
+def quit():
+    quit_user()
+    return jsonify({'message': '退出登录成功'}), 200

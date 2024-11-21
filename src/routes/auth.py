@@ -1,10 +1,12 @@
 # src/routes/auth.py
-from debugpy.adapter import access_token
 from flask import Blueprint, request, jsonify
 from src.services.auth_service import register_user, login_user, quit_user
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+import jwt
+import datetime
 
 auth_bp = Blueprint('auth', __name__)
+
+TOKEN_KEY = '114514'
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -24,7 +26,13 @@ def login():
     password = data.get('password')
     user = login_user(username, password)
     if user:
-        token = create_access_token(identity=user.id)
+        # token = create_access_token(identity=user.id)
+        payload = {
+            'user_id': user.id,
+            'user_isvip': user.is_vip,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+        }
+        token = jwt.encode(payload, TOKEN_KEY, algorithm='HS256')
         return jsonify({'message': '登录成功', 'token': token}), 200
     return jsonify({'message': '无效的用户名或密码'}), 400
 

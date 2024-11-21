@@ -16,7 +16,7 @@ from src.services.auth_service import decrypt_password
 def main():
     app = create_app()
     CORS(app)
-    app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+    app.config['JWT_SECRET_KEY'] = '114514'
     jwt = JWTManager(app)
 
     with app.app_context():

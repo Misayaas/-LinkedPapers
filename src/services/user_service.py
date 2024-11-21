@@ -4,12 +4,12 @@ from src.extensions import db
 from src.services.auth_service import encrypt_password
 
 # 获取当前用户的信息
-def get_user_profile():
-    return g.user
+def get_user_profile(user_id):
+    return User.query.get(user_id)
 
 # 更改当前用户的信息
-def update_user_profile(username=None, email=None, password=None, is_vip=None):
-    user = g.user
+def update_user_profile(user_id, username=None, email=None, password=None, is_vip=None):
+    user = User.query.get(user_id)
     if username:
         user.username = username
     if email:
@@ -23,8 +23,8 @@ def update_user_profile(username=None, email=None, password=None, is_vip=None):
     return user
 
 # 删除当前用户
-def delete_user():
-    user = g.user
+def delete_user(user_id):
+    user = User.query.get(user_id)
     db.session.delete(user)
     db.session.commit()
     g.user = None

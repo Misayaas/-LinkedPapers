@@ -4,7 +4,6 @@ from cryptography.hazmat.backends import default_backend
 from base64 import b64encode, b64decode
 from src.models import User
 from src.extensions import db
-from flask import session
 import os
 
 # 加密解密用的密钥，最终应当隐藏起来存在一个地方，不能被人发现，以防泄露
@@ -45,10 +44,9 @@ def register_user(username, email, password):
 def login_user(username, password):
     user = User.query.filter_by(username=username).first()
     if user and password == decrypt_password(user.password):
-        session['user_id'] = user.id
         return user
     return None
 
 def quit_user():
-    session.clear()
+    # session.clear()
     return None

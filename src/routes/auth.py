@@ -1,6 +1,8 @@
 # src/routes/auth.py
+from debugpy.adapter import access_token
 from flask import Blueprint, request, jsonify
 from src.services.auth_service import register_user, login_user, quit_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -22,7 +24,8 @@ def login():
     password = data.get('password')
     user = login_user(username, password)
     if user:
-        return jsonify({'message': '登录成功'}), 200
+        token = create_access_token(identity=user.id)
+        return jsonify({'message': '登录成功', 'token': token}), 200
     return jsonify({'message': '无效的用户名或密码'}), 400
 
 @auth_bp.route('/quit', methods=['POST'])

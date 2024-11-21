@@ -1,10 +1,13 @@
 import atexit
+import os
+import sys
+cur_path=os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, cur_path+"/..")
 from flask import Flask, g, session
 from src import create_app
 from src.models import create_tables, User
 from src.routes.auth import auth_bp
 from src.routes.user import user_bp
-import os
 
 from src.services.auth_service import decrypt_password
 

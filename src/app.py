@@ -19,6 +19,7 @@ def main():
 
     # def clear_session():
     #     with app.test_request_context():
+    
     #         session.clear()
     #
     # atexit.register(clear_session)

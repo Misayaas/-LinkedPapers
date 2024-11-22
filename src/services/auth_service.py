@@ -9,7 +9,6 @@ import os
 # 加密解密用的密钥，最终应当隐藏起来存在一个地方，不能被人发现，以防泄露
 AES_KEY = b'\xb25\xdb<\xb0W${\x8c\x01\x9c\x1bw\xb1\xb1\xcc'
 
-
 # 加密算法
 def encrypt_password(password):
     padder = padding.PKCS7(algorithms.AES.block_size).padder()
@@ -22,6 +21,9 @@ def encrypt_password(password):
 
 # 解密算法
 def decrypt_password(encrypted_password):
+    missing_padding = len(encrypted_password) % 4
+    if missing_padding:
+        encrypted_password += '=' * (4 - missing_padding)
     encrypted_password = b64decode(encrypted_password)
     iv = encrypted_password[:16]
     encrypted_password = encrypted_password[16:]
@@ -33,7 +35,13 @@ def decrypt_password(encrypted_password):
     return password.decode('utf-8')
 
 def register_user(username, email, password):
-    if User.query.filter_by(username=username).first() or User.query.filter_by(email=decrypt_password(email)).first():
+    users = User.query.all()
+    # 检测重复email
+    for user in users:
+        if decrypt_password(user.email) == email:
+            return None
+    # 检测重复username
+    if User.query.filter_by(username=username).first():
         return None  # 用户名或邮箱已存在
     encrypted_password = encrypt_password(password)
     encrypted_email = encrypt_password(email)

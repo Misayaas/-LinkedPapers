@@ -1,6 +1,8 @@
-import atexit
 import os
 import sys
+
+from src.routes.search import search_bp
+
 cur_path=os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, cur_path+"/..")
 from flask import Flask
@@ -25,6 +27,7 @@ def main():
     # Register blueprints
     app.register_blueprint(auth_bp, name='auth_bp', url_prefix='/api')
     app.register_blueprint(user_bp, name='user_bp', url_prefix='/api')
+    app.register_blueprint(search_bp, name='search_bp', url_prefix='/api')
 
     app.run(debug=True, port=8080)
 

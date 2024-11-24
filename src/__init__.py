@@ -1,6 +1,6 @@
 import pymysql
 from flask import Flask
-from config import Config
+from .config import Config
 from .extensions import db, migrate, login_manager, cache
 from .routes.auth import auth_bp
 from .routes.search import search_bp

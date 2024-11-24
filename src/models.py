@@ -25,38 +25,32 @@ class Paper(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # 主键
     title = db.Column(db.String(255), nullable=False)  # 论文标题，最长255字符，不能为空
     abstract = db.Column(db.Text, nullable=False)  # 论文摘要,不能为空
-    catogrory_id = db.Column(db.Integer)  # 子论文id
-    publish_year = db.Column(db.Integer)  # 发表年份
-    vectors = db.Column(db.PickleType)  # 论文的特征向量，使用 PickleType 存储
+    category = db.Column(db.String(50), nullable=True) # 论文类型
+    year = db.Column(db.Integer)  # 发表年份
+    # feat = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
-        return '<Paper(id={}, title={}, abstract={}, catogrory_id={}, publish_year={})>'.format(self.id, self.title, self.abstract, self.catogrory_id, self.publish_year)
+        return '<Paper(id={}, title={}, abstract={}, category={}, year={})>'.format(self.id, self.title, self.abstract, self.category, self.year)
 
 class Citation(db.Model):
     __tablename__ = 'citations'  # 表名
 
     id = db.Column(db.Integer, primary_key=True)  # 主键
-    source_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False)  # 引用源论文ID
-    target_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False)  # 被引用论文ID
+    citer_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False)  # 引用源论文ID
+    citee_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False)  # 被引用论文ID
+
+    citer = db.relationship('Paper', foreign_keys=[citer_id])  # 引用源论文
+    citee = db.relationship('Paper', foreign_keys=[citee_id])  # 被引用论文
 
     def __repr__(self):
-        return '<Citation(id={}, source_id={}, target_id={})>'.format(self.id, self.source_id, self.target_id)
-
-class Category(db.Model):
-    __tablename__ = 'categories'  # 表名
-
-    id = db.Column(db.Integer, primary_key=True)  # 主键
-    name = db.Column(db.String(100), nullable=False)  # 子领域名称
-
-    def __repr__(self):
-        return '<Category(id={}, name={})>'.format(self.id, self.name)
+        return '<Citation(id={}, citer_id={}, citee_id={}, citer={}, citee={})>'.format(self.id, self.citer_id, self.citee_id, self.citer, self.citee)
 
 # 创建所有表
 # 创建所有表
 def create_tables():
     metadata = MetaData()
     metadata.reflect(bind=db.engine)
-    tables = [User.__table__, Paper.__table__, Citation.__table__, Category.__table__]
+    tables = [User.__table__, Paper.__table__, Citation.__table__]
     for table in tables:
         if table.name not in metadata.tables:
             table.create(db.engine)

@@ -10,6 +10,7 @@ from src import create_app
 from src.models import create_tables
 from src.routes.auth import auth_bp
 from src.routes.user import user_bp
+from src.routes.search import search_bp
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 

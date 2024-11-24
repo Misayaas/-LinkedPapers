@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from src.services.search_service import search_papers, search_citation
 
-search_bp = Blueprint('search_bp', __name__)
+search_bp = Blueprint('search', __name__)
 
 @search_bp.route('/search', methods=['GET'])
 def search():

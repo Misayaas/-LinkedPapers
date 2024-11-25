@@ -27,7 +27,6 @@ class Paper(db.Model):
     abstract = db.Column(db.Text, nullable=False)  # 论文摘要,不能为空
     category = db.Column(db.String(50), nullable=True) # 论文类型
     year = db.Column(db.Integer)  # 发表年份
-    # feat = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
         return '<Paper(id={}, title={}, abstract={}, category={}, year={})>'.format(self.id, self.title, self.abstract, self.category, self.year)
@@ -45,12 +44,26 @@ class Citation(db.Model):
     def __repr__(self):
         return '<Citation(id={}, citer_id={}, citee_id={}, citer={}, citee={})>'.format(self.id, self.citer_id, self.citee_id, self.citer, self.citee)
 
+class Feature(db.Model):
+    __tablename__ = 'feature'  # 表名
+    paper_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False, primary_key=True)  # 主键
+    features = [db.Column(db.Integer, nullable=False) for i in range(128)] 
+
+
+    paper = db.relationship('Paper', foreign_keys=[paper_id])  # 引用源论文
+
+    def __repr__(self):
+        return '<Citation(id={}, '.format(self.paper_id) + ", ".join(f"feat{i}={self.features[i]}" for i in range(128)) + ")>"
+
+
+
+
 # 创建所有表
 # 创建所有表
 def create_tables():
     metadata = MetaData()
     metadata.reflect(bind=db.engine)
-    tables = [User.__table__, Paper.__table__, Citation.__table__]
+    tables = [User.__table__, Paper.__table__, Citation.__table__, Feature.__table__]
     for table in tables:
         if table.name not in metadata.tables:
             table.create(db.engine)

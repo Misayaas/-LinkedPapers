@@ -1,15 +1,16 @@
 import os
 import sys
 
-from src.routes.search import search_bp
 
 cur_path=os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, cur_path+"/..")
 from flask import Flask
 from src import create_app
+from src.routes.search import search_bp
 from src.models import create_tables
 from src.routes.auth import auth_bp
 from src.routes.user import user_bp
+from src.routes.search import search_bp
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 

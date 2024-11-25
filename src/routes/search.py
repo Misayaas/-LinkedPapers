@@ -5,13 +5,23 @@ search_bp = Blueprint('search', __name__)
 
 @search_bp.route('/search', methods=['GET'])
 def search():
+    # 必须参数
     keyword = request.args.get('keyword', '')
+    # 非必须参数
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
     if not keyword:
         return jsonify({'error': '需要关键词'}), 400
 
-    results = search_papers(keyword)
-    papers = [{'id':paper.id, 'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
-    return jsonify(papers)
+    results = search_papers(keyword, page, per_page)
+    papers = [{'id':paper.id, 'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results['results']]
+    return jsonify({
+        'total_num': results['total_num'],
+        'results': papers,
+        'page': results['page'],
+        'per_page': results['per_page']
+    })
 
 @search_bp.route('/citations', methods=['GET'])
 def citations():

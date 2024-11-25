@@ -2,11 +2,23 @@ from src.models import Paper, Citation, Feature, create_session
 from sqlalchemy.orm import sessionmaker
 from sklearn.neighbors import NearestNeighbors
 
-def search_papers(keyword):
+# def search_papers(keyword):
+#     session = create_session()
+#     results = session.query(Paper).filter(Paper.title.contains(keyword)).all()
+#     session.close()
+#     return results
+def search_papers(keyword, page=1, per_page=10):
     session = create_session()
-    results = session.query(Paper).filter(Paper.title.contains(keyword)).all()
+    query = session.query(Paper).filter(Paper.title.contains(keyword))
+    total_num = query.count()
+    results = query.offset((page - 1) * per_page).limit(per_page).all()
     session.close()
-    return results
+    return {
+        'total_num': total_num,
+        'results': results,
+        'page': page,
+        'per_page': per_page
+    }
 
 def search_citation(paper_id):
     session = create_session()

@@ -41,7 +41,6 @@ def import_papers(csv_path):
                 feat.features[i] = row[f'feat{i}']
             session.add(feat)
 
-
         session.commit()
         session.close()
 

@@ -10,7 +10,7 @@ def search_papers(keyword):
 
 def search_citation(paper_id):
     session = create_session()
-    results = session.query(Citation).filter(Citation.paper_id == paper_id).all()
+    results = session.query(Citation).filter(Citation.citer_id == paper_id).all()
     session.close()
     return results
 

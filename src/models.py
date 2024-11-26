@@ -47,13 +47,15 @@ class Citation(db.Model):
 class Feature(db.Model):
     __tablename__ = 'feature'  # 表名
     paper_id = db.Column(db.Integer, db.ForeignKey('paper.id'), autoincrement=True, primary_key=True)  # 主键
-    features = [db.Column(db.Integer, nullable=False) for i in range(128)] 
+    # features = [db.Column(db.Float, nullable=False) for i in range(128)] 
+    for i in range(128):
+        locals()[f'feat{i}'] = db.Column(db.Float, nullable=False)
 
 
     paper = db.relationship('Paper', foreign_keys=[paper_id])  # 引用源论文
 
     def __repr__(self):
-        return '<Citation(id={}, '.format(self.paper_id) + ", ".join(f"feat{i}={self.features[i]}" for i in range(128)) + ")>"
+        return '<Feature(paper_id={}, '.format(self.paper_id) + ", ".join((f"feat{i}=" + str(locals()[f'feat{i}'])) for i in range(128)) + ")>"
 
 
 
@@ -67,6 +69,7 @@ def create_tables():
     for table in tables:
         if table.name not in metadata.tables:
             table.create(db.engine)
+
 
 # 创建数据库会话
 def create_session():

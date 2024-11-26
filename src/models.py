@@ -55,7 +55,7 @@ class Feature(db.Model):
     paper = db.relationship('Paper', foreign_keys=[paper_id])  # 引用源论文
 
     def __repr__(self):
-        return '<Feature(paper_id={}, '.format(self.paper_id) + ", ".join((f"feat{i}=" + str(locals()[f'feat{i}'])) for i in range(128)) + ")>"
+        return '<Feature(paper_id={}, '.format(self.paper_id) + ", ".join((f"feat{i}=" + str(getattr(self, f'feat{i}'))) for i in range(128)) + ")>"
 
 
 

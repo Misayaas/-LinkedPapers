@@ -33,13 +33,19 @@ def search_citation(paper_id):
     session.close()
     return results
 
+def feat2vec(feat):
+    return [getattr(feat, f"feat{i}") for i in range(128)]
+
 def search_similar(paper_id, number):
     session = create_session()
     feature = session.query(Feature).filter(Feature.paper_id == paper_id).all()
-    nbs = NearestNeighbors(n_neighbors=number, algorithm='ball_tree').fit(session.query(Feature).all())
-    distances, indices = nbs.kneighbors(feature)
+    feature_rows = session.query(Feature).all()
+    features = [feat2vec(row) for row in feature_rows]
+    nbs = NearestNeighbors(n_neighbors=number, algorithm='ball_tree').fit(features)
+    distances, indices = nbs.kneighbors([feat2vec(feature[0])])
 
-    results = [session.query(Paper).filter(Paper.id == index).first() for index in indices]
+
+    results = [session.query(Paper).filter(Paper.id == index + 1).first() for index in indices[0]]
     session.close()
     return results
 

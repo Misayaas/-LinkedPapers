@@ -55,7 +55,7 @@ def similar():
         return jsonify({'error': '需要paper_id'}), 400
 
 
-    results = search_similar(paper_id, number)
+    results = search_similar(paper_id, int(number))
     papers = [{'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(papers)
 

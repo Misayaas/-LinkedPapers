@@ -34,7 +34,7 @@ def citations():
     return jsonify(citations)
 
 @search_bp.route('/similar', methods=['GET'])
-def search_similar():
+def similar():
     paper_id = request.args.get('paper_id', '')
     number = request.args.get('number', '')
     if not number:

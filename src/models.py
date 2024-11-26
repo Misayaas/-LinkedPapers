@@ -46,7 +46,7 @@ class Citation(db.Model):
 
 class Feature(db.Model):
     __tablename__ = 'feature'  # 表名
-    paper_id = db.Column(db.Integer, db.ForeignKey('paper.id'), nullable=False, primary_key=True)  # 主键
+    paper_id = db.Column(db.Integer, db.ForeignKey('paper.id'), autoincrement=True, primary_key=True)  # 主键
     features = [db.Column(db.Integer, nullable=False) for i in range(128)] 
 
 

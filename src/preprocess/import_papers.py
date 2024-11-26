@@ -1,6 +1,9 @@
 import pandas as pd
 import os
+import sys
 import os.path as path
+cur_path=os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, cur_path+"/../..")
 
 from sqlalchemy import column
 
@@ -36,7 +39,7 @@ def import_papers(csv_path):
             session.add(citation)
 
         for _, row in feats.iterrows():
-            feat = Feature
+            feat = Feature()
             for i in range(128):
                 feat.features[i] = row[f'feat{i}']
             session.add(feat)
@@ -45,4 +48,4 @@ def import_papers(csv_path):
         session.close()
 
 if __name__ == "__main__":
-    import_papers('F:\\grade3_LEARNING\\bigData\\hw3\\LinkedPapers')
+    import_papers('~/Projects/BigData/hw3/')

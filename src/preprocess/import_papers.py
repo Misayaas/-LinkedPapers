@@ -56,4 +56,4 @@ def import_papers(csv_path):
         session.close()
 
 if __name__ == "__main__":
-    import_papers('~/Projects/BigData/hw3/')
+    import_papers('F:\\grade3_LEARNING\\bigData\\hw3\\LinkedPapers')

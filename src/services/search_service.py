@@ -22,7 +22,8 @@ def search_papers(keyword, page=1, per_page=10):
 
 def search_citation(paper_id):
     session = create_session()
-    results = session.query(Citation).filter(Citation.citer_id == paper_id).all()
+    citation_ids = session.query(Citation).filter(Citation.citer_id == paper_id).all()
+    results = [session.query(Paper).filter(Paper.id == citation.citee_id).first() for citation in citation_ids]
     session.close()
     return results
 

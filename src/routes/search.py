@@ -30,7 +30,7 @@ def citations():
         return jsonify({'error': '需要paper_id'}), 400
 
     results = search_citation(paper_id)
-    citations = [{'citer_id': citation.citer_id, 'citee_id': citation.citee_id} for citation in results]
+    citations = [{'id': paper.id, 'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(citations)
 
 @search_bp.route('/similar', methods=['GET'])

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from src.services.search_service import search_papers, search_citation, search_similar
+from src.services.search_service import search_papers, search_citation, search_similar, search_category
 
 search_bp = Blueprint('search', __name__)
 
@@ -46,3 +46,23 @@ def similar():
     results = search_similar(paper_id, number)
     papers = [{'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(papers)
+
+@search_bp.route('/category', methods=['GET'])
+def category():
+    # 必须参数
+    paper_id = request.args.get('paper_id', '', type=int)
+    # 非必须参数
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    if not paper_id:
+        return jsonify({'error': '需要paper_id'}), 400
+
+    results = search_category(paper_id, page, per_page)
+    papers = [{'id': paper.id, 'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results['results']]
+    return jsonify({
+        'total_num': results['total_num'],
+        'results': papers,
+        'page': results['page'],
+        'per_page': results['per_page']
+    })

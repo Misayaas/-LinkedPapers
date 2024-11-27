@@ -36,3 +36,21 @@ def search_similar(paper_id, number):
     results = [session.query(Paper).filter(Paper.id == index).first() for index in indices]
     session.close()
     return results
+
+def search_category(paper_id, page=1, per_page=10):
+    session = create_session()
+    paper = session.query(Paper).filter(Paper.id == paper_id).first()
+    if not paper:
+        session.close()
+        return {'total_num': 0, 'results': [], 'page': page, 'per_page': per_page}
+
+    query = session.query(Paper).filter(Paper.category == paper.category)
+    total_num = query.count()
+    results = query.offset((page - 1) * per_page).limit(per_page).all()
+    session.close()
+    return {
+        'total_num': total_num,
+        'results': results,
+        'page': page,
+        'per_page': per_page
+    }

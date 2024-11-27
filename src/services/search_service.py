@@ -7,7 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 #     results = session.query(Paper).filter(Paper.title.contains(keyword)).all()
 #     session.close()
 #     return results
-def search_papers(keyword, page=1, per_page=10):
+def search_papers_by_name(keyword, page=1, per_page=10):
     session = create_session()
     query = session.query(Paper).filter(Paper.title.contains(keyword))
     total_num = query.count()
@@ -19,6 +19,12 @@ def search_papers(keyword, page=1, per_page=10):
         'page': page,
         'per_page': per_page
     }
+
+def search_paper_by_id(paper_id):
+    session = create_session()
+    result = session.query(Paper).filter(Paper.id == paper_id).first()
+    session.close()
+    return result
 
 def search_citation(paper_id):
     session = create_session()

@@ -44,10 +44,12 @@ def search_similar(paper_id, number):
     nbs = NearestNeighbors(n_neighbors=number, algorithm='ball_tree').fit(features)
     distances, indices = nbs.kneighbors([feat2vec(feature[0])])
 
+    # remove self
+    similar = [int(index) for index in indices[0] if index != paper_id - 1]
 
-    results = [session.query(Paper).filter(Paper.id == index + 1).first() for index in indices[0]]
+    # results = [session.query(Paper).filter(Paper.id == index + 1).first() for index in similar]
     session.close()
-    return results
+    return similar
 
 def search_category(paper_id, page=1, per_page=10):
     session = create_session()

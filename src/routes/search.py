@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from src.services.search_service import search_papers_by_name, search_paper_by_id,search_citation, search_similar, search_category
+from src.services.search_service import search_papers_by_name, search_paper_by_id,search_citation, search_similar, search_category, search_similar_fast
 
 search_bp = Blueprint('search', __name__)
 
@@ -58,6 +58,21 @@ def similar():
     results = search_similar(paper_id, int(number))
     papers = [{'id': paper.id,'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(papers)
+
+@search_bp.route('/search/similar_fast', methods=['GET'])
+def similar_fast():
+    paper_id = request.args.get('paper_id', '', type=int)
+    number = request.args.get('number', '', type=int)
+    if not number:
+        return jsonify({'error': 'invalid number of similar papers requested'}), 400
+    if not paper_id:
+        return jsonify({'error': '需要paper_id'}), 400
+
+
+    results = search_similar_fast(paper_id, int(number))
+    papers = [{'id': paper.id,'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
+    return jsonify(papers)
+
 
 @search_bp.route('/search/category', methods=['GET'])
 def category():

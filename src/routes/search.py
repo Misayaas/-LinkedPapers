@@ -48,7 +48,7 @@ def citations():
 @search_bp.route('/search/similar', methods=['GET'])
 def similar():
     paper_id = request.args.get('paper_id', '')
-    number = request.args.get('number', '')
+    number = request.args.get('number', '', type=int)
     if not number:
         return jsonify({'error': 'invalid number of similar papers requested'}), 400
     if not paper_id:

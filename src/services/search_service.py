@@ -1,7 +1,7 @@
 from src.models import Paper, Citation, Feature, create_session
-from sqlalchemy.orm import sessionmaker
 from sklearn.neighbors import NearestNeighbors
 from pymilvus import MilvusClient
+from flask import g
 import time
 import json
 
@@ -39,7 +39,11 @@ def search_citation(paper_id):
 def feat2vec(feat):
     return [getattr(feat, f"feat{i}") for i in range(128)]
 
+# need_vip
 def search_similar(paper_id, number):
+    if g.user.is_vip == False:
+        return None
+
     session = create_session()
 
     feature = session.query(Feature).filter(Feature.paper_id == paper_id).all()
@@ -57,7 +61,10 @@ def search_similar(paper_id, number):
     session.close()
     return results
 
+# need_vip
 def search_similar_fast(paper_id, number):
+    if g.user.is_vip == False:
+        return None
 
     session = create_session()
     client = MilvusClient("feat.db")
@@ -81,8 +88,11 @@ def search_similar_fast(paper_id, number):
     results = [session.query(Paper).filter(Paper.id == index).first() for index in ids]
     return results
 
-
+# need_vip
 def search_category(paper_id, page=1, per_page=10):
+    if g.user.is_vip == False:
+        return None
+
     session = create_session()
     paper = session.query(Paper).filter(Paper.id == paper_id).first()
     if not paper:

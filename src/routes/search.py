@@ -1,9 +1,12 @@
 from flask import Blueprint, request, jsonify
+
+from src.middleware import login_required
 from src.services.search_service import search_papers_by_name, search_paper_by_id,search_citation, search_similar, search_category, search_similar_fast
 
 search_bp = Blueprint('search', __name__)
 
 @search_bp.route('/search/name', methods=['GET'])
+@login_required
 def search_by_name():
     # 必须参数
     keyword = request.args.get('keyword', '')
@@ -24,6 +27,7 @@ def search_by_name():
     })
 
 @search_bp.route('/search/id', methods=['GET'])
+@login_required
 def search_by_id():
     paper_id = request.args.get('paper_id', '')
     if not paper_id:
@@ -36,6 +40,7 @@ def search_by_id():
     return jsonify({'id': result.id, 'title': result.title, 'abstract': result.abstract, 'category': result.category, 'year': result.year})
 
 @search_bp.route('/search/citations', methods=['GET'])
+@login_required
 def citations():
     paper_id = request.args.get('paper_id', '')
     if not paper_id:
@@ -46,6 +51,7 @@ def citations():
     return jsonify(citations)
 
 @search_bp.route('/search/similar', methods=['GET'])
+@login_required
 def similar():
     paper_id = request.args.get('paper_id', '', type=int)
     number = request.args.get('number', '', type=int)
@@ -54,12 +60,15 @@ def similar():
     if not paper_id:
         return jsonify({'error': '需要paper_id'}), 400
 
-
     results = search_similar(paper_id, int(number))
+    if results is None:
+        return jsonify({'error': '不是vip'}), 400
+
     papers = [{'id': paper.id,'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(papers)
 
 @search_bp.route('/search/similar_fast', methods=['GET'])
+@login_required
 def similar_fast():
     paper_id = request.args.get('paper_id', '', type=int)
     number = request.args.get('number', '', type=int)
@@ -68,13 +77,16 @@ def similar_fast():
     if not paper_id:
         return jsonify({'error': '需要paper_id'}), 400
 
-
     results = search_similar_fast(paper_id, int(number))
+    if results is None:
+        return jsonify({'error': '不是vip'}), 400
+
     papers = [{'id': paper.id,'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results]
     return jsonify(papers)
 
 
 @search_bp.route('/search/category', methods=['GET'])
+@login_required
 def category():
     # 必须参数
     paper_id = request.args.get('paper_id', '', type=int)
@@ -86,6 +98,9 @@ def category():
         return jsonify({'error': '需要paper_id'}), 400
 
     results = search_category(paper_id, page, per_page)
+    if results is None:
+        return jsonify({'error': '不是vip'}), 400
+
     papers = [{'id': paper.id, 'title': paper.title, 'abstract': paper.abstract, 'category': paper.category, 'year': paper.year} for paper in results['results']]
     return jsonify({
         'total_num': results['total_num'],
